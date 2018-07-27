@@ -22,32 +22,27 @@ router.get("/new", check, function(req, res) {
 
 //CREATE (POST)
 router.post("/", check, function(req, res) {
-    Campground.create(
-        {
-            name: req.body.name, 
-            image: req.body.image,
-            description: req.body.description
-        }, 
-        function(err, campground) {
-            if(err) {
-                console.log(err);
-            }
-            else {
-                campground.author.id = req.user.id;
-                campground.author.username = req.user.username;
-                campground.save();
-                res.redirect("/campgrounds");
-            }
+    var name = req.body.name;
+    var image = req.body.image;
+    var description = req.body.description;
+    author = {id: req.user.id, username: req.user.username};
+    var newCampground = {name: name, image: image, description: description, author: author};
+    Campground.create(newCampground, function(err, campground) {
+        if(err) {
+            console.log(err);
         }
-    )    
+        else {
+            campground.author.id = req.user.id;
+            campground.author.username = req.user.username;
+            campground.save();
+            res.redirect("/campgrounds");
+        }
+    });    
 });
 
 //SHOW (MUST BE AT END TO PREVENT INTERPRETATION OF OTHER ROUTES AS ID)
 router.get("/:id", function(req, res) {
-    Campground.
-    findById(req.params.id).
-    populate("comments").
-    exec(function(err, foundCampground){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
         if(err){
             console.log(err)
         } else {

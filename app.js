@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 
 //REQUIRE ROUTES
 app.use(indexRoutes);
-app.use("/campgrounds/", campgroundRoutes);
+app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 
 app.listen(8000, process.env.IP, function() {
